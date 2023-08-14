@@ -20,8 +20,9 @@ import {
   ADD_ACCOUNT_NEW_ACCOUNT_BUTTON,
   ADD_ACCOUNT_IMPORT_ACCOUNT_BUTTON,
 } from '../../../../wdio/screen-objects/testIDs/Components/AddAccountModal.testIds';
+import { Text } from 'react-native-svg';
 
-const AddAccountActions = ({ onBack }: AddAccountActionsProps) => {
+const AddAccountActions = ({ onBack, onAddHardwareWallet }: AddAccountActionsProps) => {
   const { navigate } = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,11 +32,11 @@ const AddAccountActions = ({ onBack }: AddAccountActionsProps) => {
     AnalyticsV2.trackEvent(MetaMetricsEvents.ACCOUNTS_IMPORTED_NEW_ACCOUNT, {});
   }, [navigate, onBack]);
 
-  const openConnectHardwareWallet = useCallback(() => {
-    navigate('ConnectQRHardwareFlow');
-    onBack();
-    AnalyticsV2.trackEvent(MetaMetricsEvents.CONNECT_HARDWARE_WALLET, {});
-  }, [onBack, navigate]);
+  // const openConnectKeystoneWallet = useCallback(() => {
+  //   navigate('ConnectQRHardwareFlow');
+  //   onBack();
+  //   AnalyticsV2.trackEvent(MetaMetricsEvents.CONNECT_HARDWARE_WALLET, {});
+  // }, [onBack, navigate]);
 
   const createNewAccount = useCallback(async () => {
     const { KeyringController, PreferencesController } = Engine.context;
@@ -78,7 +79,7 @@ const AddAccountActions = ({ onBack }: AddAccountActionsProps) => {
         <AccountAction
           actionTitle={strings('account_actions.add_hardware_wallet')}
           iconName={IconName.Hardware}
-          onPress={openConnectHardwareWallet}
+          onPress={onAddHardwareWallet}
           disabled={isLoading}
         />
       </View>

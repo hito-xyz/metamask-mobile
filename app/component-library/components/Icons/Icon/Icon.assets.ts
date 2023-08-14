@@ -163,6 +163,10 @@ import Wallet from './assets/wallet.svg';
 import Warning from './assets/warning.svg';
 import Wifi from './assets/wifi.svg';
 
+import Hito from './assets/hito.svg'
+import Keystone from './assets/keystone.svg';
+import Nfc from './assets/nfc.svg';
+
 /**
  * Asset stored by icon name
  */
@@ -325,4 +329,7 @@ export const assetByIconName: AssetByIconName = {
   [IconName.Wallet]: Wallet,
   [IconName.Warning]: Warning,
   [IconName.Wifi]: Wifi,
+  [IconName.Keystone]: Keystone,
+  [IconName.Hito]: Hito,
+  [IconName.Nfc]: Nfc,
 };

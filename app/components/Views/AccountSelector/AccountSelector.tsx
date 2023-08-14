@@ -31,6 +31,7 @@ import {
   AccountSelectorScreens,
 } from './AccountSelector.types';
 import styles from './AccountSelector.styles';
+import { ConnectHardwareWalletsDrawer } from '../ConnectHardwareWallets';
 
 const AccountSelector = ({ route }: AccountSelectorProps) => {
   const { onSelectAccount, checkBalanceError } = route.params || {};
@@ -100,6 +101,18 @@ const AccountSelector = ({ route }: AccountSelectorProps) => {
     () => (
       <AddAccountActions
         onBack={() => setScreen(AccountSelectorScreens.AccountSelector)}
+        onAddHardwareWallet={() => {
+          setScreen(AccountSelectorScreens.ConnectHardwareWallets);
+        }}
+      />
+    ),
+    [],
+  );
+
+  const renderConnectHardwareWalletsDrawer = useCallback(
+    () => (
+      <ConnectHardwareWalletsDrawer
+        onBack={() => setScreen(AccountSelectorScreens.AddAccountActions)}
       />
     ),
     [],
@@ -111,6 +124,8 @@ const AccountSelector = ({ route }: AccountSelectorProps) => {
         return renderAccountSelector();
       case AccountSelectorScreens.AddAccountActions:
         return renderAddAccountActions();
+      case AccountSelectorScreens.ConnectHardwareWallets:
+        return renderConnectHardwareWalletsDrawer();
       default:
         return renderAccountSelector();
     }

@@ -68,6 +68,7 @@ import AssetOptions from '../../Views/AssetOptions';
 import ImportPrivateKey from '../../Views/ImportPrivateKey';
 import ImportPrivateKeySuccess from '../../Views/ImportPrivateKeySuccess';
 import ConnectQRHardware from '../../Views/ConnectQRHardware';
+import { ConnectHitoWalletView } from '../../Views/ConnectHardwareWallets';
 import { AUTHENTICATION_APP_TRIGGERED_AUTH_NO_CREDENTIALS } from '../../../constants/error';
 import { UpdateNeeded } from '../../../components/UI/UpdateNeeded';
 import { EnableAutomaticSecurityChecksModal } from '../../../components/UI/EnableAutomaticSecurityChecksModal';
@@ -559,6 +560,16 @@ const App = ({ userLoggedIn }) => {
     </Stack.Navigator>
   );
 
+  const ConnectHardwareWalletsFlow = () => (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="ConnectHitoWalletView" component={ConnectHitoWalletView} />
+    </Stack.Navigator>
+  );
+
   const EditAccountNameFlow = () => (
     <Stack.Navigator>
       <Stack.Screen name="EditAccountName" component={EditAccountName} />
@@ -637,6 +648,11 @@ const App = ({ userLoggedIn }) => {
             <Stack.Screen
               name="ConnectQRHardwareFlow"
               component={ConnectQRHardwareFlow}
+              options={{ animationEnabled: true }}
+            />
+            <Stack.Screen
+              name="ConnectHardwareWalletsFlow"
+              component={ConnectHardwareWalletsFlow}
               options={{ animationEnabled: true }}
             />
             <Stack.Screen
