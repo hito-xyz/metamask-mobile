@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
-import { strings } from '../../../../locales/i18n';
 import {
   HITO_LEARN_MORE,
   HITO_SUPPORT,
@@ -100,7 +99,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_SUPPORT_VIDEO,
-          title: strings('connect_hito_wallet.description2'),
+          title: 'Как это работает?',
         },
       });
     };
@@ -109,7 +108,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_LEARN_MORE,
-          title: strings('connect_hito_wallet.keystone'),
+          title: 'Hito Wallet',
         },
       });
     };
@@ -118,7 +117,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_SUPPORT,
-          title: strings('connect_hito_wallet.description4'),
+          title: 'Hito (руководство)',
         },
       });
     };
@@ -129,39 +128,39 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
                 contentContainerStyle={styles.container}
                 style={styles.scrollWrapper}
             >
-                <Text style={styles.title}>{strings('connect_hito_wallet.title')}</Text>
+                <Text style={styles.title}>Подключите аппаратный кошелек на основе NFC</Text>
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>
                         Connect an airgapped hardware wallet that communicates through NFC chip.
                     </Text>
                     <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
-                        {strings('connect_hito_wallet.description2')}
+                     Как это работает?
                     </Text>
                     <Text style={styles.text}>
-                        {strings('connect_hito_wallet.description3')}
+                      Вот официально поддерживаемые аппаратные кошельки с физически разделённым оборудованием:
                     </Text>
                     <Text style={styles.keystone}>
-                        {strings('connect_hito_wallet.keystone')}
+                      Hito Wallet
                     </Text>
                     <View style={styles.buttonGroup}>
                         <Text
                             style={[styles.text, styles.link, styles.linkMarginRight]}
                             onPress={navigateToLearnMore}
                         >
-                            {strings('connect_hito_wallet.learnMore')}
+                          Подробнее
                         </Text>
                         <Text
                             style={[styles.text, styles.link]}
                             onPress={navigateToTutorial}
                         >
-                            {strings('connect_hito_wallet.tutorial')}
+                          Руководство
                         </Text>
                     </View>
                     <Text style={styles.text}>
-                        {strings('connect_hito_wallet.description5')}
+                      1. Разблокируйте свой Hito wallet
                     </Text>
                     <Text style={styles.text}>
-                        {strings('connect_hito_wallet.description6')}
+                      2. Нажмите на «Меню», затем выберите «Синхронизация»
                     </Text>
                 </View>
                 <Text style={styles.text}>
@@ -174,7 +173,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
                     onPress={onConnect}
                     style={styles.button}
                 >
-                    {strings('connect_qr_hardware.button_continue')}
+                  Продолжить
                 </StyledButton>
             </View>
         </View>
