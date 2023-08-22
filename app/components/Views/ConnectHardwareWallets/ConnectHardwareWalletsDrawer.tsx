@@ -32,6 +32,11 @@ const ConnectHardwareWalletsDrawer = ({ onBack }: IConnectHardwareWalletsDrawerP
         onBack()
     }, [navigate]);
 
+    const openConnectNFC = useCallback(() => {
+        navigate('ConnectNFCAlertFlow');
+        onBack()
+    }, [navigate]);
+
     return (
         <Fragment>
             <SheetHeader
@@ -41,6 +46,11 @@ const ConnectHardwareWalletsDrawer = ({ onBack }: IConnectHardwareWalletsDrawerP
             {/* Нужен перевод текстов account_actions  */}
 
             <View>
+                <AccountAction
+                    actionTitle={'Open Modals'}
+                    iconName={IconName.Nfc}
+                    onPress={openConnectNFC}
+                />
                 <AccountAction
                     actionTitle={'Keystone Wallet'}
                     iconName={IconName.Keystone}

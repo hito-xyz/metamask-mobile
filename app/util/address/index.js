@@ -183,6 +183,8 @@ export function getAddressAccountType(address) {
         return 'QR';
       case KeyringTypes.simple:
         return 'Imported';
+      case KeyringTypes.hito:
+        return 'HITO';
       default:
         return 'MetaMask';
     }

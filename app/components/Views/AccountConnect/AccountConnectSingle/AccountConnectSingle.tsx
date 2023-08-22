@@ -64,6 +64,9 @@ const AccountConnectSingle = ({
       case KeyringTypes.simple:
         label = strings('accounts.imported');
         break;
+      case KeyringTypes.hito:
+        label = 'Hito wallet'
+        break;
     }
     return label;
   }, []);
