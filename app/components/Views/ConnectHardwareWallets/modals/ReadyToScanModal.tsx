@@ -1,7 +1,5 @@
-import { colors } from '@metamask/design-tokens';
-import { back } from '@react-navigation/compat/lib/typescript/src/NavigationActions';
 import React from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Appearance, Image, KeyboardAvoidingView, Modal, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const modalStyles = StyleSheet.create({
   centeredView: {
@@ -54,7 +52,7 @@ const modalStyles = StyleSheet.create({
 
 const nfc_image = require('../../../../images/nfc.png'); // eslint-disable-line
 
-const ReadyToScanModal = ({opened, close }: { opened: boolean, close: () => void}) => {
+const ReadyToScanModal = ({ opened, close }: { opened: boolean, close: () => void }) => {
 
   return (
     <Modal

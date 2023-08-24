@@ -17,6 +17,7 @@ import StyledButton from '../../UI/StyledButton';
 
 interface IConnectQRInstructionProps {
   navigation: any;
+  renderAlert: () => Element;
   onConnect: () => void;
 }
 
@@ -123,60 +124,61 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
     };
     
     return (
-        <View style={styles.wrapper}>
-            <ScrollView
-                contentContainerStyle={styles.container}
-                style={styles.scrollWrapper}
-            >
-                <Text style={styles.title}>Подключите аппаратный кошелек на основе NFC</Text>
-                <View style={styles.textContainer}>
-                    <Text style={styles.text}>
-                        Connect an airgapped hardware wallet that communicates through NFC chip.
+      <View style={styles.wrapper}>
+        <ScrollView
+            contentContainerStyle={styles.container}
+            style={styles.scrollWrapper}
+        >
+            <Text style={styles.title}>Подключите аппаратный кошелек на основе NFC</Text>
+            <View style={styles.textContainer}>
+                <Text style={styles.text}>
+                    Connect an airgapped hardware wallet that communicates through NFC chip.
+                </Text>
+                {props.renderAlert()}
+                <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
+                  Как это работает?
+                </Text>
+                <Text style={styles.text}>
+                  Вот официально поддерживаемые аппаратные кошельки с физически разделённым оборудованием:
+                </Text>
+                <Text style={styles.keystone}>
+                  Hito Wallet
+                </Text>
+                <View style={styles.buttonGroup}>
+                    <Text
+                        style={[styles.text, styles.link, styles.linkMarginRight]}
+                        onPress={navigateToLearnMore}
+                    >
+                      Подробнее
                     </Text>
-                    <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
-                     Как это работает?
-                    </Text>
-                    <Text style={styles.text}>
-                      Вот официально поддерживаемые аппаратные кошельки с физически разделённым оборудованием:
-                    </Text>
-                    <Text style={styles.keystone}>
-                      Hito Wallet
-                    </Text>
-                    <View style={styles.buttonGroup}>
-                        <Text
-                            style={[styles.text, styles.link, styles.linkMarginRight]}
-                            onPress={navigateToLearnMore}
-                        >
-                          Подробнее
-                        </Text>
-                        <Text
-                            style={[styles.text, styles.link]}
-                            onPress={navigateToTutorial}
-                        >
-                          Руководство
-                        </Text>
-                    </View>
-                    <Text style={styles.text}>
-                      1. Разблокируйте свой Hito wallet
-                    </Text>
-                    <Text style={styles.text}>
-                      2. Нажмите на «Меню», затем выберите «Синхронизация»
+                    <Text
+                        style={[styles.text, styles.link]}
+                        onPress={navigateToTutorial}
+                    >
+                      Руководство
                     </Text>
                 </View>
                 <Text style={styles.text}>
-                  Картинка для инструкции
+                  1. Разблокируйте свой Hito wallet
                 </Text>
-            </ScrollView>
-            <View style={styles.bottom}>
-                <StyledButton
-                    type={'confirm'}
-                    onPress={onConnect}
-                    style={styles.button}
-                >
-                  Продолжить
-                </StyledButton>
+                <Text style={styles.text}>
+                  2. Нажмите на «Меню», затем выберите «Синхронизация»
+                </Text>
             </View>
+            <Text style={styles.text}>
+              Картинка для инструкции
+            </Text>
+        </ScrollView>
+        <View style={styles.bottom}>
+            <StyledButton
+                type={'confirm'}
+                onPress={onConnect}
+                style={styles.button}
+            >
+              Продолжить
+            </StyledButton>
         </View>
+      </View>
     );
 };
 

@@ -6,16 +6,17 @@ import React, {
   useState,
 } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import AnimatedQRScannerModal from '../../UI/QRHardware/AnimatedQRScanner';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import BlockingActionModal from '../../UI/BlockingActionModal';
-import { strings } from '../../../../locales/i18n';
 import Alert, { AlertType } from '../../Base/Alert';
 import { fontStyles } from '../../../styles/common';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Device from '../../../util/device';
 import { useTheme } from '../../../util/theme';
 import HitoInstruction from './HitoInstruction';
+import Engine from '../../../core/Engine';
+import { UR } from '@ngraveio/bc-ur';
+import { SUPPORTED_UR_TYPE } from '../../../constants/qr';
+import { QRCodeScannerModal } from './modals';
 
 interface IConnectHitoWalletViewProps {
   navigation: any;
@@ -66,10 +67,92 @@ const createStyles = (colors: any) =>
 const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  
-  const onConnectHardware = useCallback(async () => {
-    console.log('onConnectHardware');
+  const [scannerVisible, setScannerVisible] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [QRState, setQRState] = useState({
+    sync: {
+      reading: false,
+    },
+  });
+
+  const [accounts, setAccounts] = useState<{ address: string; index: number; balance: string }[]>([]);
+
+  const KeyringController = useMemo(() => {
+    const { KeyringController: keyring } = Engine.context as any;
+    return keyring;
   }, []);
+
+  const showScanner = useCallback(() => {
+    setScannerVisible(true);
+  }, []);
+  
+  const hideScanner = useCallback(() => {
+    setScannerVisible(false);
+  }, []);
+  
+  const resetError = useCallback(() => {
+    setErrorMsg('');
+  }, []);
+
+  const subscribeKeyringState = useCallback((storeValue: any) => {
+    setQRState(storeValue);
+  }, []);
+
+  const onConnectHardware = useCallback(async () => {
+    resetError();
+    const _accounts = await KeyringController.connectQRHardware(0);
+    setAccounts(_accounts);
+    console.log('accounts', _accounts);
+  }, [KeyringController, resetError]);
+
+
+  useEffect(() => {
+    let memStore: any;
+    KeyringController.getQRKeyringState().then((_memStore: any) => {
+      memStore = _memStore;
+      memStore.subscribe(subscribeKeyringState);
+    });
+    return () => {
+      if (memStore) {
+        memStore.unsubscribe(subscribeKeyringState);
+      }
+    };
+  }, [KeyringController, subscribeKeyringState]);
+
+  useEffect(() => {
+    if (QRState.sync.reading) {
+      showScanner();
+    } else {
+      hideScanner();
+    }
+  }, [QRState.sync, hideScanner, showScanner]);
+
+
+  const onScanError = useCallback(
+    async (error: string) => {
+      hideScanner();
+      setErrorMsg(error);
+      const qrKeyring = await KeyringController.getOrAddQRKeyring();
+      qrKeyring.cancelSync();
+    },
+    [hideScanner, KeyringController],
+  );
+
+  const onScanSuccess = useCallback((address: string) => {
+    hideScanner();
+    //TODO: - MAX FEDIN
+
+    KeyringController.submitQRCryptoAccount(address);
+    resetError();
+   }, [KeyringController, hideScanner, resetError]);
+  
+
+  const renderAlert = () =>
+    errorMsg !== '' && (
+      <Alert type={AlertType.Error} onPress={resetError}>
+        <Text style={styles.error}>{errorMsg}</Text>
+      </Alert>
+    );
 
   return (
     <Fragment>
@@ -88,9 +171,19 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
             <MaterialIcon name="close" size={15} style={styles.closeIcon} />
           </TouchableOpacity>
         </View>
+
         <HitoInstruction
           onConnect={onConnectHardware}
+          renderAlert={renderAlert}
           navigation={navigation}
+        />
+
+        <QRCodeScannerModal
+          visible={scannerVisible}
+          purpose={'sync'}
+          onScanSuccess={onScanSuccess}
+          onScanError={onScanError}
+          hideModal={hideScanner}
         />
       </View>
     </Fragment>
