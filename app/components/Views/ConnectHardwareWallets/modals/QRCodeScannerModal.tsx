@@ -2,11 +2,10 @@
 /* eslint @typescript-eslint/no-require-imports: "off" */
 
 'use strict';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   SafeAreaView,
   Image,
-  Text,
   TouchableOpacity,
   View,
   StyleSheet,
@@ -15,7 +14,6 @@ import { RNCamera } from 'react-native-camera';
 import { colors, fontStyles } from '../../../../styles/common';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
-
 
 const styles = StyleSheet.create({
   modal: {
@@ -86,23 +84,20 @@ interface AnimatedQRScannerProps {
 }
 
 const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
-  const {
-    visible,
-    onScanError,
-    purpose,
-    onScanSuccess,
-    hideModal,
-    pauseQRCode,
-  } = props;
+  const { visible, onScanError, onScanSuccess, hideModal, pauseQRCode } = props;
 
-
-  const onBarCodeRead = useCallback((response) => {
-    if (response.data.split(':')[0] === 'ethereum') {
-      onScanSuccess(response.data);
-    } else {
-      onScanError('Invalid QR code');
-    }
-  }, []);
+  const onBarCodeRead = useCallback(
+    (response) => {
+      const chain = response.data.split(':')[0];
+      const address = response.data.split(':')[1];
+      if (chain === 'ethereum') {
+        onScanSuccess(address);
+      } else {
+        onScanError('Invalid QR code');
+      }
+    },
+    [onScanSuccess, onScanError],
+  );
 
   return (
     <Modal
@@ -115,9 +110,9 @@ const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
     >
       <View style={styles.container}>
         <RNCamera
-          onMountError={(error) => {
-            console.log('onMountError', error);
-          }}
+          // onMountError={(error) => {
+          //   // console.log('onMountError', error);
+          // }}
           captureAudio={false}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
@@ -129,9 +124,9 @@ const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
             buttonPositive: 'Zdarova Ok',
             buttonNegative: 'Zdarova Cancel',
           }}
-          onStatusChange={(e) => {
-            console.log('onStatusChange', e)
-          }}
+          // onStatusChange={(e) => {
+          //   // console.log('onStatusChange', e);
+          // }}
         >
           <SafeAreaView style={styles.innerView}>
             <TouchableOpacity style={styles.closeIcon} onPress={hideModal}>

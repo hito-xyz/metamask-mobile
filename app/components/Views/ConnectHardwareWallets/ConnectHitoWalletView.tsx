@@ -14,8 +14,6 @@ import Device from '../../../util/device';
 import { useTheme } from '../../../util/theme';
 import HitoInstruction from './HitoInstruction';
 import Engine from '../../../core/Engine';
-import { UR } from '@ngraveio/bc-ur';
-import { SUPPORTED_UR_TYPE } from '../../../constants/qr';
 import { QRCodeScannerModal } from './modals';
 
 interface IConnectHitoWalletViewProps {
@@ -75,7 +73,9 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     },
   });
 
-  const [accounts, setAccounts] = useState<{ address: string; index: number; balance: string }[]>([]);
+  // const [accounts, setAccounts] = useState<
+  //   { address: string; index: number; balance: string }[]
+  // >([]);
 
   const KeyringController = useMemo(() => {
     const { KeyringController: keyring } = Engine.context as any;
@@ -85,11 +85,11 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
   const showScanner = useCallback(() => {
     setScannerVisible(true);
   }, []);
-  
+
   const hideScanner = useCallback(() => {
     setScannerVisible(false);
   }, []);
-  
+
   const resetError = useCallback(() => {
     setErrorMsg('');
   }, []);
@@ -100,11 +100,11 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
 
   const onConnectHardware = useCallback(async () => {
     resetError();
-    const _accounts = await KeyringController.connectQRHardware(0);
-    setAccounts(_accounts);
-    console.log('accounts', _accounts);
+    await KeyringController.connectQRHardware(0);
+    // const _accounts = await KeyringController.connectQRHardware(0);
+    // setAccounts(_accounts);
+    // console.log('accounts', _accounts);
   }, [KeyringController, resetError]);
-
 
   useEffect(() => {
     let memStore: any;
@@ -127,7 +127,6 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     }
   }, [QRState.sync, hideScanner, showScanner]);
 
-
   const onScanError = useCallback(
     async (error: string) => {
       hideScanner();
@@ -138,14 +137,25 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     [hideScanner, KeyringController],
   );
 
-  const onScanSuccess = useCallback((address: string) => {
-    hideScanner();
-    //TODO: - MAX FEDIN
-
-    KeyringController.submitQRCryptoAccount(address);
-    resetError();
-   }, [KeyringController, hideScanner, resetError]);
-  
+  const onScanSuccess = useCallback(
+    async (address: string) => {
+      const { PreferencesController } = Engine.context as any;
+      //TODO: - MAX FEDIN
+      try {
+        // const accountAddress = await KeyringController.unlockNFCHardwareWalletAccount(0);
+        // console.log("Account address:", accountAddress);
+        PreferencesController.addIdentities([address]);
+        PreferencesController.setAccountLabel(address, `Hito wallet`);
+        PreferencesController.setSelectedAddress(address);
+      } catch (err) {
+        // console.log('Error: Connecting adding NFC', err);
+      }
+      hideScanner();
+      navigation.goBack();
+      resetError();
+    },
+    [navigation, hideScanner, resetError],
+  );
 
   const renderAlert = () =>
     errorMsg !== '' && (
@@ -159,7 +169,7 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Icon
-            name='qrcode'
+            name="qrcode"
             size={42}
             style={styles.qrcode}
             color={colors.text.default}

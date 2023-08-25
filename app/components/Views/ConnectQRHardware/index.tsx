@@ -183,6 +183,9 @@ const ConnectQRHardware = ({ navigation }: IConnectQRHardwareProps) => {
           device_type: 'QR Hardware',
         },
       );
+      // console.log('Print QR');
+      // console.log(ur.type);
+      // console.log(ur.cbor.toString('hex'));
       if (ur.type === SUPPORTED_UR_TYPE.CRYPTO_HDKEY) {
         KeyringController.submitQRCryptoHDKey(ur.cbor.toString('hex'));
       } else {
