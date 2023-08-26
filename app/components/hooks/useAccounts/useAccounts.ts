@@ -113,7 +113,7 @@ const useAccounts = ({
     },
     [network],
   );
-
+  //TODO: Max S. Add here
   const getAccounts = useCallback(() => {
     if (!isMountedRef.current) return;
     // Keep track of the Y position of account item. Used for scrolling purposes.

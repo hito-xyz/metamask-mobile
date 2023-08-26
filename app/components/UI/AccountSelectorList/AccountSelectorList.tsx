@@ -53,6 +53,7 @@ const AccountSelectorList = ({
 
   const getKeyExtractor = ({ address }: Account) => address;
 
+  //TODO: Max S. Add here
   const getTagLabel = (type: KeyringTypes) => {
     let label = '';
     switch (type) {
