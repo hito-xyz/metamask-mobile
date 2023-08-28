@@ -63,6 +63,9 @@ const AccountSelectorList = ({
       case KeyringTypes.simple:
         label = strings('accounts.imported');
         break;
+      case KeyringTypes.nfc_simple:
+        label = 'Hito wallet';
+        break;
     }
     return label;
   };

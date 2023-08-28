@@ -15,6 +15,7 @@ import { AddressBookController } from '@metamask/address-book-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { ComposableController } from '@metamask/composable-controller';
 import {
+  NFCKeyring,
   KeyringController,
   SignTypedDataVersion,
 } from '@metamask/keyring-controller';
@@ -237,7 +238,7 @@ class Engine {
       const phishingController = new PhishingController();
       phishingController.maybeUpdateState();
 
-      const additionalKeyrings = [QRHardwareKeyring];
+      const additionalKeyrings = [QRHardwareKeyring, NFCKeyring];
 
       const getIdentities = () => {
         const identities = preferencesController.state.identities;
@@ -250,7 +251,6 @@ class Engine {
 
       const keyringState =
         initialKeyringState || initialState.KeyringController;
-
       const keyringController = new KeyringController(
         {
           removeIdentity: preferencesController.removeIdentity.bind(

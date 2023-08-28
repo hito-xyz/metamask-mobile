@@ -137,24 +137,20 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     [hideScanner, KeyringController],
   );
 
-  const onScanSuccess = useCallback(
-    async (address: string) => {
-      const { PreferencesController } = Engine.context as any;
+  const onScanSuccess = useCallback(async (address: string) => {
+      const {PreferencesController} = Engine.context as any;
       //TODO: - MAX FEDIN
       try {
-        // const accountAddress = await KeyringController.unlockNFCHardwareWalletAccount(0);
-        // console.log("Account address:", accountAddress);
-        PreferencesController.addIdentities([address]);
-        PreferencesController.setAccountLabel(address, `Hito wallet`);
-        PreferencesController.setSelectedAddress(address);
+        const accountAddress =
+          await KeyringController.addNFCHardwareWalletAccount(address);
+
       } catch (err) {
-        // console.log('Error: Connecting adding NFC', err);
+        console.log('Error: Error adding NFC', err);
       }
       hideScanner();
-      navigation.goBack();
       resetError();
     },
-    [navigation, hideScanner, resetError],
+    [KeyringController, navigation, hideScanner, resetError],
   );
 
   const renderAlert = () =>
