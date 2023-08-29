@@ -115,10 +115,10 @@ const ConnectNFCAlert = ({ navigation }: IConnectHitoWalletViewProps) => {
           opened={modalNFCVisible}
           close={() => setModalNFCVisible(false)}
         />
-        <ConfirmTransactionModal
+        {/* <ConfirmTransactionModal
           opened={modalConfirmVisible}
           close={() => setModalConfirmVisible(false)}
-        />
+        /> */}
         <View style={styles.header}>
           <Icon
             name="qrcode"

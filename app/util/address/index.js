@@ -162,6 +162,26 @@ export function isQRHardwareAccount(address) {
   }
   return qrAccounts.includes(address.toLowerCase());
 }
+/**
+ * judge address is NFC hardware account or not
+ *
+ * @param {String} address - String corresponding to an address
+ * @returns {Boolean} - Returns a boolean
+ */
+export function isNFCHardwareAccount(address) {
+  const { KeyringController } = Engine.context;
+  const { keyrings } = KeyringController.state;
+  const qrKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.nfc_simple,
+  );
+  let qrAccounts = [];
+  for (const qrKeyring of qrKeyrings) {
+    qrAccounts = qrAccounts.concat(
+      qrKeyring.accounts.map((account) => account.toLowerCase()),
+    );
+  }
+  return qrAccounts.includes(address.toLowerCase());
+}
 
 /**
  * judge address's account type for tracking
@@ -183,7 +203,7 @@ export function getAddressAccountType(address) {
         return 'QR';
       case KeyringTypes.simple:
         return 'Imported';
-      case KeyringTypes.hito:
+      case KeyringTypes.nfc_simple:
         return 'HITO';
       default:
         return 'MetaMask';

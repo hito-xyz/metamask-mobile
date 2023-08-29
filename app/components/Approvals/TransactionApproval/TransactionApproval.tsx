@@ -4,8 +4,11 @@ import { ApprovalTypes } from '../../../core/RPCMethods/RPCMethodMiddleware';
 import Approval from '../../Views/Approval';
 import Approve from '../../Views/ApproveView/Approve';
 import QRSigningModal from '../../UI/QRHardware/QRSigningModal';
+import NFCSigningModal from '../../UI/QRHardware/NFCSigningModal';
 import withQRHardwareAwareness from '../../UI/QRHardware/withQRHardwareAwareness';
 import { IQRState } from '../../UI/QRHardware/types';
+import { Text } from 'react-native-svg';
+import { ConfirmTransactionModal } from '../../Views/ConnectHardwareWallets/modals';
 
 export enum TransactionModalType {
   Transaction = 'transaction',
@@ -64,6 +67,12 @@ const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
     );
   }
 
+  // тут вызывается наша модалка
+  if (!props.isSigningQRObject && !props.transactionType) {
+    return (
+      <ConfirmTransactionModal onCancel={onComplete} isVisible/>
+    );
+  }
   return null;
 };
 

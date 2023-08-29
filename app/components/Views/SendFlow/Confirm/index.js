@@ -70,6 +70,7 @@ import AppConstants from '../../../../core/AppConstants';
 import {
   getAddressAccountType,
   isQRHardwareAccount,
+  isNFCHardwareAccount,
 } from '../../../../util/address';
 import { KEYSTONE_TX_CANCELED } from '../../../../constants/error';
 import { ThemeContext, mockTheme } from '../../../../util/theme';
@@ -662,6 +663,85 @@ class Confirm extends PureComponent {
     });
   };
 
+  //TODO: MAX я короче добавил чисто для тестов
+  onNextNFC = async () => {
+    const { TransactionController, KeyringController, ApprovalController } =
+      Engine.context;
+    const {
+      transactionState: { assetType },
+      navigation,
+      resetTransaction,
+      gasEstimateType,
+    } = this.props;
+
+    const {
+      legacyGasTransaction,
+      transactionConfirmed,
+      EIP1559GasTransaction,
+    } = this.state;
+    if (transactionConfirmed) return;
+    this.setState({ transactionConfirmed: true, stopUpdateGas: true });
+    try {
+      const transaction = this.prepareTransactionToSend();
+      let error;
+      if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+        error = this.validateAmount({
+          transaction,
+          total: EIP1559GasTransaction.totalMaxHex,
+        });
+      } else {
+        error = this.validateAmount({
+          transaction,
+          total: legacyGasTransaction.totalHex,
+        });
+      }
+      this.setError(error);
+      if (error) {
+        this.setState({ transactionConfirmed: false, stopUpdateGas: true });
+        return;
+      }
+      const { result, transactionMeta } =
+        await TransactionController.addTransaction(
+          transaction,
+          TransactionTypes.MMM,
+          WalletDevice.MM_MOBILE,
+        );
+      
+      //TODO: MAX непонятно зачем он нужен, мне кажется такой же метод нам потребуется
+      await KeyringController.resetQRKeyringState();
+
+      //TODO: MAX этот метод видмио регестрирует эвент и ждет подписания транзакции
+      // на фоне вызывается в RootRPCMethodsUI  TransactionApproval, для меня непонятно как он работает и в какой момент и где пробрасываются параметры навигации
+      await ApprovalController.accept(transactionMeta.id, undefined, {
+        waitForResult: true,
+      });
+
+      // await new Promise((resolve) => resolve(result));
+
+      // if (transactionMeta.error) {
+      //   throw transactionMeta.error;
+      // }
+
+      // InteractionManager.runAfterInteractions(() => {
+      //   NotificationManager.watchSubmittedTransaction({
+      //     ...transactionMeta,
+      //     assetType,
+      //   });
+      //   this.checkRemoveCollectible();
+      //   AnalyticsV2.trackEvent(
+      //     MetaMetricsEvents.SEND_TRANSACTION_COMPLETED,
+      //     this.getAnalyticsParams(),
+      //   );
+      //   stopGasPolling();
+      //   resetTransaction();
+      //   navigation && navigation.dangerouslyGetParent()?.pop();
+      // });
+    } catch (error) {
+     
+    }
+    this.setState({ transactionConfirmed: false });
+  };
+
   onNext = async () => {
     const { TransactionController, KeyringController, ApprovalController } =
       Engine.context;
@@ -963,6 +1043,7 @@ class Confirm extends PureComponent {
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.NONE;
     const isQRHardwareWalletDevice = isQRHardwareAccount(fromSelectedAddress);
+    const isNFCHardwareWalletDevice = isNFCHardwareAccount(fromSelectedAddress);
 
     const isTestNetwork = isTestNet(network);
 
@@ -1113,14 +1194,18 @@ class Confirm extends PureComponent {
               isAnimating
             }
             containerStyle={styles.buttonNext}
-            onPress={this.onNext}
+            onPress={this.onNextNFC}
             testID={TXN_CONFIRM_SEND_BUTTON}
           >
             {transactionConfirmed ? (
               <ActivityIndicator size="small" color={colors.primary.inverse} />
             ) : isQRHardwareWalletDevice ? (
               strings('transaction.confirm_with_qr_hardware')
-            ) : (
+              ) : isNFCHardwareWalletDevice ? 
+                (
+                  'Confirm with Hito Wallet'
+                )
+              : (
               strings('transaction.send')
             )}
           </StyledButton>

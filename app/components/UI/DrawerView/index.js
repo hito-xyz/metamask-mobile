@@ -505,7 +505,9 @@ class DrawerView extends PureComponent {
           tag = strings('accounts.imported');
         } else if (keyring.type === KeyringTypes.qr) {
           tag = strings('transaction.hardware');
-        }
+        } else if (keyring.type === KeyringTypes.nfc_simple) {
+          tag = 'Hito NFC'
+         }
         break;
       }
     }

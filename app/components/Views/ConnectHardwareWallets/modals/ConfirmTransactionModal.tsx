@@ -1,8 +1,9 @@
 import { colors } from '@metamask/design-tokens';
 import { back } from '@react-navigation/compat/lib/typescript/src/NavigationActions';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button, { ButtonSize, ButtonVariants, ButtonWidthTypes } from '../../../../component-library/components/Buttons/Button';
+import { HitoSDKController } from '@hito-wallet/hito-react-native-sdk';
 
 const modalStyles = StyleSheet.create({
   centeredView: {
@@ -88,13 +89,48 @@ const modalStyles = StyleSheet.create({
   }
 });
 
-const ConfirmTransactionModal = ({ opened, close }: { opened: boolean, close: () => void}) => {
+interface Props {
+  isVisible: boolean;
+  onCancel: () => void;
+}
+const ConfirmTransactionModal = ({ onCancel, isVisible }: Props) => {
+  const [isChecked, setChecked] = useState(false); // eslint-disable-line
+  const [signedTXData, setTxData] = useState('');
+  const hitoNFCController = new HitoSDKController();
+
+  useEffect(() => { 
+    hitoNFCController.initNFC();
+  }, []);
+
+  const UNSIGNED_TRANSACTION_TEST =
+    '0xee818d840b766ae082520894feed146aa5f20bc991a994a1ac2fe0bb75df2bb087038d7ea4c680008083aa36a78080';
+  const addressToTransmit = '0xc5EF8B09b40C2129040Cd10399aE3d8126a0B6a5'
+  
+  const handleTransmitUnsigned = async () => {
+    await hitoNFCController.transmitUnsignedEVMTransaction(
+      addressToTransmit,
+      UNSIGNED_TRANSACTION_TEST,
+    );
+    setChecked(true);
+  };
+
+  const handleScanSigned = async () => {
+    try {
+      const signedData = await hitoNFCController.scanSignedEVMTransaction();
+      if (signedData) {
+        setTxData(JSON.stringify(signedData));
+        console.log('Signed data', signedData)
+      }
+    } catch (error) {
+      console.error('Error reading NFC:', error);
+    }
+  };
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={opened}
+      visible={isVisible}
     >
       <View style={modalStyles.centeredView}>
         <View style={modalStyles.modalView}>
@@ -116,20 +152,34 @@ const ConfirmTransactionModal = ({ opened, close }: { opened: boolean, close: ()
           </View>
 
           <View style={modalStyles.containerView}>
-            <Button
-              variant={ButtonVariants.Primary}
-              style={modalStyles.button}
-              label={'Open NFC connection'}
-              size={ButtonSize.Auto}
-              onPress={close}
-              width={ButtonWidthTypes.Auto}
-            />
+            {
+              isChecked ? (
+                <Button
+                  variant={ButtonVariants.Primary}
+                  style={modalStyles.button}
+                  label={'Sign transaction'}
+                  size={ButtonSize.Auto}
+                  onPress={handleScanSigned}
+                  width={ButtonWidthTypes.Auto}
+                />
+              ): (
+                <Button
+                  variant={ButtonVariants.Primary}
+                  style={modalStyles.button}
+                  label={'Open NFC connection'}
+                  size={ButtonSize.Auto}
+                  onPress={handleTransmitUnsigned}
+                  width={ButtonWidthTypes.Auto}
+                />
+              )
+            }
+          
             <Button
               variant={ButtonVariants.Secondary}
               style={modalStyles.button}
               label={'Cancel'}
               size={ButtonSize.Auto}
-              onPress={close}
+              onPress={onCancel}
               width={ButtonWidthTypes.Auto}
             />
           </View>
