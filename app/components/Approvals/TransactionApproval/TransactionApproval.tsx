@@ -21,6 +21,7 @@ export interface TransactionApprovalProps {
   onComplete: () => void;
   QRState?: IQRState;
   isSigningQRObject?: boolean;
+  nfcTransaction?: any
 }
 
 const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
@@ -67,10 +68,14 @@ const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
     );
   }
 
-  // тут вызывается наша модалка
-  if (!props.isSigningQRObject && !props.transactionType) {
+  if (props.nfcTransaction && !props.transactionType) {
     return (
-      <ConfirmTransactionModal onCancel={onComplete} isVisible/>
+      <ConfirmTransactionModal
+        onCancel={onComplete}
+        onSuccess={onComplete}
+        onFailure={onComplete}
+        isVisible
+      />
     );
   }
   return null;

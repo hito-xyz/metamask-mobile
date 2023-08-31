@@ -558,8 +558,8 @@ const App = ({ userLoggedIn }) => {
       <Stack.Screen name="ConnectQRHardware" component={ConnectQRHardware} />
     </Stack.Navigator>
   );
-
-  const ConnectHardwareWalletsFlow = () => (
+  
+  const ConnectHitoWalletFlow = () => (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
@@ -660,8 +660,8 @@ const App = ({ userLoggedIn }) => {
               options={{ animationEnabled: true }}
             />
             <Stack.Screen
-              name="ConnectHardwareWalletsFlow"
-              component={ConnectHardwareWalletsFlow}
+              name="ConnectHitoWalletFlow"
+              component={ConnectHitoWalletFlow}
               options={{ animationEnabled: true }}
             />
             <Stack.Screen

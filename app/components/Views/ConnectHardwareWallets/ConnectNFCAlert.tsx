@@ -11,7 +11,7 @@ import { fontStyles } from '../../../styles/common';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Device from '../../../util/device';
 import { useTheme } from '../../../util/theme';
-import { ConfirmTransactionModal, ReadyToScanModal } from './modals';
+import { ConfirmTransactionModal, ScanHitoAccountModal } from './modals';
 import Button, {
   ButtonSize,
   ButtonVariants,
@@ -111,7 +111,7 @@ const ConnectNFCAlert = ({ navigation }: IConnectHitoWalletViewProps) => {
   return (
     <Fragment>
       <View style={styles.container}>
-        <ReadyToScanModal
+        <ScanHitoAccountModal
           opened={modalNFCVisible}
           close={() => setModalNFCVisible(false)}
         />

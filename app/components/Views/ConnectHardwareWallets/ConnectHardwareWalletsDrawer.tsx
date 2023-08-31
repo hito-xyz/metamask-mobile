@@ -27,30 +27,18 @@ const ConnectHardwareWalletsDrawer = ({ onBack }: IConnectHardwareWalletsDrawerP
     }, [navigate]);
 
 
-    const openConnectHardwareWallets = useCallback(() => {
-        navigate('ConnectHardwareWalletsFlow');
+    const openConnectHitoWallet = useCallback(() => {
+        navigate('ConnectHitoWalletFlow');
         onBack()
     }, [navigate]);
-
-    const openConnectNFC = useCallback(() => {
-        navigate('ConnectNFCAlertFlow');
-        onBack()
-    }, [navigate]);
-
+    
     return (
         <Fragment>
             <SheetHeader
                 title={strings('account_actions.add_hardware_wallet')}
                 onBack={onBack}
             />
-            {/* Нужен перевод текстов account_actions  */}
-
             <View>
-                <AccountAction
-                    actionTitle={'Open Modals'}
-                    iconName={IconName.Nfc}
-                    onPress={openConnectNFC}
-                />
                 <AccountAction
                     actionTitle={'Keystone Wallet'}
                     iconName={IconName.Keystone}
@@ -59,7 +47,7 @@ const ConnectHardwareWalletsDrawer = ({ onBack }: IConnectHardwareWalletsDrawerP
                 <AccountAction
                     actionTitle={'Hito Wallet'}
                     iconName={IconName.Hito}
-                    onPress={openConnectHardwareWallets}
+                    onPress={openConnectHitoWallet}
                 />
             </View>
         </Fragment>

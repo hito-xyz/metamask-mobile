@@ -705,6 +705,7 @@ class Confirm extends PureComponent {
         this.setState({ transactionConfirmed: false, stopUpdateGas: true });
         return;
       }
+
       const { result, transactionMeta } =
         await TransactionController.addTransaction(
           transaction,
@@ -721,11 +722,11 @@ class Confirm extends PureComponent {
         waitForResult: true,
       });
 
-      // await new Promise((resolve) => resolve(result));
+      await new Promise((resolve) => resolve(result));
 
-      // if (transactionMeta.error) {
-      //   throw transactionMeta.error;
-      // }
+      if (transactionMeta.error) {
+        throw transactionMeta.error;
+      }
 
       // InteractionManager.runAfterInteractions(() => {
       //   NotificationManager.watchSubmittedTransaction({
@@ -1199,7 +1200,7 @@ class Confirm extends PureComponent {
               isAnimating
             }
             containerStyle={styles.buttonNext}
-            onPress={this.onNextNFC}
+            onPress={this.onNext}
             testID={TXN_CONFIRM_SEND_BUTTON}
           >
             {transactionConfirmed ? (

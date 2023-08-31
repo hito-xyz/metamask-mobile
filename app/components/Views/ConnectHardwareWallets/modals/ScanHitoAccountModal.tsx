@@ -52,7 +52,12 @@ const modalStyles = StyleSheet.create({
 
 const nfc_image = require('../../../../images/nfc.png'); // eslint-disable-line
 
-const ReadyToScanModal = ({ opened, close }: { opened: boolean, close: () => void }) => {
+interface Props {
+  opened: boolean
+  close: () => void
+}
+
+const ScanHitoAccountModal = ({ opened, close }: Props) => {
 
   return (
     <Modal
@@ -80,4 +85,4 @@ const ReadyToScanModal = ({ opened, close }: { opened: boolean, close: () => voi
   );
 };
 
-export default ReadyToScanModal;
+export default ScanHitoAccountModal;

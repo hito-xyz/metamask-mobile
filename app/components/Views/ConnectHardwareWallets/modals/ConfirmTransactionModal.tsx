@@ -1,101 +1,111 @@
 import { colors } from '@metamask/design-tokens';
 import { back } from '@react-navigation/compat/lib/typescript/src/NavigationActions';
 import React, { useEffect, useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button, { ButtonSize, ButtonVariants, ButtonWidthTypes } from '../../../../component-library/components/Buttons/Button';
 import { HitoSDKController } from '@hito-wallet/hito-react-native-sdk';
 
-const modalStyles = StyleSheet.create({
-  centeredView: {
-    width: '100%',
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 8,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalView: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 32,
-    padding: 16,
-    alignItems: 'center',
-    gap: 24
-  },
-  button: {
-    height: 50,
-    width: '100%',
-    borderRadius: 100,
-  },
-  textStyle: {
-    color: '#1098FC',
-    fontSize: 13,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  modalTitle: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
-  modalSubtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    maxWidth: 300
-  },
-  containerView: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8
-  },
-  transactionInfoView: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#c4c4c4',
-    borderRadius: 8,
-    padding: 16
-  },
-  amountTitle: {
-    fontSize: 14,
-    fontWeight: '400',
-  },
-  addressTitle: {
-    fontSize: 14,
-    fontWeight: '400',
-  },
-  amountCount: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1097FB'
-  },
-  flexStartContainer: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  },
-  divider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#c4c4c4',
-    margin: 8
-  }
-});
+import Modal from 'react-native-modal';
+import { useTheme } from '../../../../util/theme';
+import ScanSignedTransactionModal from './ScanSignedTransactionModal';
+
+const createStyles = (colors: any) =>
+  StyleSheet.create({
+    modal: {
+      margin: 0,
+      justifyContent: 'flex-end',
+    },
+    centeredView: {
+      width: '100%',
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      padding: 8,
+    },
+    modalView: {
+      width: '100%',
+      borderRadius: 32,
+      padding: 16,
+      alignItems: 'center',
+      gap: 24,
+      backgroundColor: colors.background.default,
+    },
+    button: {
+      height: 50,
+      width: '100%',
+      borderRadius: 100,
+    },
+    modalTitle: {
+      fontSize: 24,
+      textAlign: 'center',
+      color: colors.text.default,
+    },
+    modalSubtitle: {
+      fontSize: 14,
+      textAlign: 'center',
+      maxWidth: 300,
+      color: colors.text.default,
+    },
+    containerView: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 8
+    },
+    transactionInfoView: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 8,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: colors.border.default,
+      borderRadius: 8,
+      padding: 16
+    },
+    amountTitle: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: colors.text.default,
+    },
+    addressTitle: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: colors.text.default,
+    },
+    amountCount: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.info.default,
+    },
+    flexStartContainer: {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start'
+    },
+    divider: {
+      width: '100%',
+      height: 1,
+      backgroundColor: colors.border.default,
+      margin: 8
+    }
+  });
 
 interface Props {
   isVisible: boolean;
   onCancel: () => void;
+  onSuccess: () => void;
+  onFailure: (error: string) => void;
 }
-const ConfirmTransactionModal = ({ onCancel, isVisible }: Props) => {
-  const [isChecked, setChecked] = useState(false); // eslint-disable-line
-  const [signedTXData, setTxData] = useState('');
+const ConfirmTransactionModal = ({ onCancel, onSuccess, onFailure, isVisible }: Props) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+  const [isReadyToSign, setReadyToSign] = useState(false); 
+  const [scanSignedTransactionVisible, setScanSignedTransactionVisible] = useState(false);
   const hitoNFCController = new HitoSDKController();
 
   useEffect(() => { 
@@ -111,61 +121,74 @@ const ConfirmTransactionModal = ({ onCancel, isVisible }: Props) => {
       addressToTransmit,
       UNSIGNED_TRANSACTION_TEST,
     );
-    setChecked(true);
+    setReadyToSign(true);
   };
 
-  const handleScanSigned = async () => {
-    try {
-      const signedData = await hitoNFCController.scanSignedEVMTransaction();
-      if (signedData) {
-        setTxData(JSON.stringify(signedData));
-        console.log('Signed data', signedData)
-      }
-    } catch (error) {
-      console.error('Error reading NFC:', error);
-    }
+  const handleSignedTxData = async (signedTxData: string) => {
+    console.log(signedTxData)
+    
+    // try {
+    //   const signedData = await hitoNFCController.scanSignedEVMTransaction();
+    //   if (signedData) {
+    //     setTxData(JSON.stringify(signedData));
+    //     console.log('Signed data', signedData)
+    //   }
+    // } catch (error) {
+    //   console.error('Error reading NFC:', error);
+    // }
   };
 
   return (
     <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
+      isVisible={isVisible}
+      style={styles.modal}
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      backdropOpacity={0.7}
+      backdropColor={colors.overlay.default}
+      animationInTiming={600}
+      animationOutTiming={600}
+      hideModalContentWhileAnimating
+      onModalShow={() => {
+      }}
+      onModalHide={() => {
+      }}
+      propagateSwipe
     >
-      <View style={modalStyles.centeredView}>
-        <View style={modalStyles.modalView}>
-          <View style={modalStyles.containerView}>
-            <Text style={modalStyles.modalTitle}>Confirm transaction</Text>
-            <Text style={modalStyles.modalSubtitle}>Please confirm that you see the same transaction on your hardware wallet</Text>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.containerView}>
+            <Text style={styles.modalTitle}>Confirm transaction</Text>
+            <Text style={styles.modalSubtitle}>Please confirm that you see the same transaction on your hardware wallet</Text>
           </View>
 
-          <View style={modalStyles.transactionInfoView}>
-            <View style={modalStyles.flexStartContainer}>
-              <Text style={modalStyles.amountTitle}>Amount: </Text>
-              <Text style={modalStyles.amountCount}>0.000119 ETH</Text>
+          <View style={styles.transactionInfoView}>
+            <View style={styles.flexStartContainer}>
+              <Text style={styles.amountTitle}>Amount: </Text>
+              <Text style={styles.amountCount}>0.000119 ETH</Text>
             </View>
-            <View style={modalStyles.divider}></View>
-            <View style={modalStyles.flexStartContainer}>
-              <Text style={modalStyles.amountTitle}>To: </Text>
-              <Text style={modalStyles.addressTitle}>0x435d...4dF1</Text>
+            <View style={styles.divider}></View>
+            <View style={styles.flexStartContainer}>
+              <Text style={styles.amountTitle}>To: </Text>
+              <Text style={styles.addressTitle}>0x435d...4dF1</Text>
             </View>
           </View>
 
-          <View style={modalStyles.containerView}>
+          <View style={styles.containerView}>
             {
-              isChecked ? (
+              isReadyToSign ? (
                 <Button
                   variant={ButtonVariants.Primary}
-                  style={modalStyles.button}
+                  style={styles.button}
                   label={'Sign transaction'}
                   size={ButtonSize.Auto}
-                  onPress={handleScanSigned}
+                  onPress={() => setScanSignedTransactionVisible(true)}
                   width={ButtonWidthTypes.Auto}
                 />
               ): (
                 <Button
                   variant={ButtonVariants.Primary}
-                  style={modalStyles.button}
+                  style={styles.button}
                   label={'Open NFC connection'}
                   size={ButtonSize.Auto}
                   onPress={handleTransmitUnsigned}
@@ -176,7 +199,7 @@ const ConfirmTransactionModal = ({ onCancel, isVisible }: Props) => {
           
             <Button
               variant={ButtonVariants.Secondary}
-              style={modalStyles.button}
+              style={styles.button}
               label={'Cancel'}
               size={ButtonSize.Auto}
               onPress={onCancel}
@@ -185,6 +208,14 @@ const ConfirmTransactionModal = ({ onCancel, isVisible }: Props) => {
           </View>
         </View>
       </View>
+      {/* need to add error alert */}
+
+      <ScanSignedTransactionModal
+        visible={scanSignedTransactionVisible}
+        onSuccess={handleSignedTxData}
+        onError={() => setScanSignedTransactionVisible(false)}
+        onCancel={() => setScanSignedTransactionVisible(false)}
+      />
     </Modal>
   );
 };
