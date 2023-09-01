@@ -65,7 +65,7 @@ const ScanSignedTransactionModal = (props: Props) => {
         onError('Invalid QR code');
         return;
       }
-      const regex = /\/tx\/#!([0-9a-fA-F]+)/;
+      const regex = /\/tx\/#!(0x[0-9a-fA-F]+)/;
       const result = response.data.match(regex);
 
       if (result) {

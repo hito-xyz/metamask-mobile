@@ -1,13 +1,14 @@
-import { colors } from '@metamask/design-tokens';
-import { back } from '@react-navigation/compat/lib/typescript/src/NavigationActions';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Button, { ButtonSize, ButtonVariants, ButtonWidthTypes } from '../../../../component-library/components/Buttons/Button';
 import { HitoSDKController } from '@hito-wallet/hito-react-native-sdk';
 
 import Modal from 'react-native-modal';
 import { useTheme } from '../../../../util/theme';
 import ScanSignedTransactionModal from './ScanSignedTransactionModal';
+import { INFCState } from '../../../UI/QRHardware/types';
+import Engine from '../../../../core/Engine';
+import { toChecksumAddress } from 'ethereumjs-util';
 
 const createStyles = (colors: any) =>
   StyleSheet.create({
@@ -97,45 +98,45 @@ const createStyles = (colors: any) =>
 
 interface Props {
   isVisible: boolean;
+  NFCState: INFCState;
   onCancel: () => void;
   onSuccess: () => void;
   onFailure: (error: string) => void;
 }
-const ConfirmTransactionModal = ({ onCancel, onSuccess, onFailure, isVisible }: Props) => {
+
+const ConfirmTransactionModal = ({ onCancel, onSuccess, onFailure, isVisible, NFCState }: Props) => {
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const [isReadyToSign, setReadyToSign] = useState(false); 
+  const [isReadyToSign, setReadyToSign] = useState(false);
   const [scanSignedTransactionVisible, setScanSignedTransactionVisible] = useState(false);
   const hitoNFCController = new HitoSDKController();
+  const { KeyringController } = Engine.context as any;
 
-  useEffect(() => { 
+  useEffect(() => {
     hitoNFCController.initNFC();
   }, []);
 
-  const UNSIGNED_TRANSACTION_TEST =
-    '0xee818d840b766ae082520894feed146aa5f20bc991a994a1ac2fe0bb75df2bb087038d7ea4c680008083aa36a78080';
-  const addressToTransmit = '0xc5EF8B09b40C2129040Cd10399aE3d8126a0B6a5'
-  
+
   const handleTransmitUnsigned = async () => {
+    const address = toChecksumAddress(NFCState.sign.request?.address!);
+    const rawTx =
+      NFCState.sign.request?.rawTx!;
     await hitoNFCController.transmitUnsignedEVMTransaction(
-      addressToTransmit,
-      UNSIGNED_TRANSACTION_TEST,
+      address,
+      rawTx
     );
+    await KeyringController.transmitUnsignedTransaction(NFCState.sign.request?.requestId!);
     setReadyToSign(true);
   };
 
-  const handleSignedTxData = async (signedTxData: string) => {
-    console.log(signedTxData)
-    
-    // try {
-    //   const signedData = await hitoNFCController.scanSignedEVMTransaction();
-    //   if (signedData) {
-    //     setTxData(JSON.stringify(signedData));
-    //     console.log('Signed data', signedData)
-    //   }
-    // } catch (error) {
-    //   console.error('Error reading NFC:', error);
-    // }
+  const handleSignedTxData = async (signedTransaction: string) => {
+    try {
+      if (signedTransaction) {
+        KeyringController.submitSignedNFCTransaction(NFCState.sign.request?.requestId!, signedTransaction.substring(2));
+      }
+    } catch (error) {
+      console.error('Error reading NFC:', error);
+    }
   };
 
   return (
@@ -196,7 +197,7 @@ const ConfirmTransactionModal = ({ onCancel, onSuccess, onFailure, isVisible }: 
                 />
               )
             }
-          
+
             <Button
               variant={ButtonVariants.Secondary}
               style={styles.button}

@@ -12,3 +12,16 @@ export interface IQRState {
     };
   };
 }
+
+export interface INFCState {
+  sync: {
+    reading: boolean;
+  };
+  sign: {
+    request?: {
+      requestId: string;
+      address: string;
+      rawTx: string;
+    };
+  };
+}

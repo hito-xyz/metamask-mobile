@@ -4,10 +4,8 @@ import { ApprovalTypes } from '../../../core/RPCMethods/RPCMethodMiddleware';
 import Approval from '../../Views/Approval';
 import Approve from '../../Views/ApproveView/Approve';
 import QRSigningModal from '../../UI/QRHardware/QRSigningModal';
-import NFCSigningModal from '../../UI/QRHardware/NFCSigningModal';
 import withQRHardwareAwareness from '../../UI/QRHardware/withQRHardwareAwareness';
-import { IQRState } from '../../UI/QRHardware/types';
-import { Text } from 'react-native-svg';
+import { IQRState, INFCState } from '../../UI/QRHardware/types';
 import { ConfirmTransactionModal } from '../../Views/ConnectHardwareWallets/modals';
 
 export enum TransactionModalType {
@@ -20,8 +18,9 @@ export interface TransactionApprovalProps {
   navigation: any;
   onComplete: () => void;
   QRState?: IQRState;
+  NFCState?: INFCState;
   isSigningQRObject?: boolean;
-  nfcTransaction?: any
+  isSigningNFCObject?: boolean;
 }
 
 const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
@@ -68,9 +67,10 @@ const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
     );
   }
 
-  if (props.nfcTransaction && !props.transactionType) {
+  if (props.isSigningNFCObject && !props.transactionType) {
     return (
       <ConfirmTransactionModal
+        NFCState={props.NFCState as any}
         onCancel={onComplete}
         onSuccess={onComplete}
         onFailure={onComplete}
@@ -82,5 +82,5 @@ const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
 };
 
 export const TransactionApproval = withQRHardwareAwareness(
-  TransactionApprovalInternal as any,
+  TransactionApprovalInternal as any
 );
