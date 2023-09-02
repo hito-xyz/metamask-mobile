@@ -130,13 +130,8 @@ const ConfirmTransactionModal = ({ onCancel, onSuccess, onFailure, isVisible, NF
   };
 
   const handleSignedTxData = async (signedTransaction: string) => {
-    try {
-      if (signedTransaction) {
-        KeyringController.submitSignedNFCTransaction(NFCState.sign.request?.requestId!, signedTransaction.substring(2));
-      }
-    } catch (error) {
-      console.error('Error reading NFC:', error);
-    }
+    KeyringController.submitSignedNFCTransaction(NFCState.sign.request?.requestId!, signedTransaction.substring(2));
+    onSuccess();
   };
 
   return (
