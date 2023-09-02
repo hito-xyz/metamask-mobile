@@ -14,7 +14,6 @@ import { RNCamera } from 'react-native-camera';
 import { colors, fontStyles } from '../../../../styles/common';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
-import { on } from 'events';
 
 const styles = StyleSheet.create({
   modal: {

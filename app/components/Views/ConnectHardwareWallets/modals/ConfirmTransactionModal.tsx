@@ -12,7 +12,6 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import EthereumAddress from '../../../UI/EthereumAddress';
 import { useDispatch } from 'react-redux';
 import { resetTransaction } from '../../../../actions/transaction';
-import { navigate } from '@react-navigation/compat/lib/typescript/src/NavigationActions';
 
 const createStyles = (colors: any) =>
   StyleSheet.create({
