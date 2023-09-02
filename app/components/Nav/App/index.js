@@ -655,11 +655,6 @@ const App = ({ userLoggedIn }) => {
               options={{ animationEnabled: true }}
             />
             <Stack.Screen
-              name="ConnectNFCAlertFlow"
-              component={ConnectNFCAlertFlow}
-              options={{ animationEnabled: true }}
-            />
-            <Stack.Screen
               name="EditAccountName"
               component={EditAccountNameFlow}
               options={{ animationEnabled: true }}

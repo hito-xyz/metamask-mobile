@@ -73,9 +73,9 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     },
   });
 
-  // const [accounts, setAccounts] = useState<
-  //   { address: string; index: number; balance: string }[]
-  // >([]);
+  const [accounts, setAccounts] = useState<
+    { address: string; index: number; balance: string }[]
+  >([]);
 
   const KeyringController = useMemo(() => {
     const { KeyringController: keyring } = Engine.context as any;
@@ -100,7 +100,8 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
 
   const onConnectHardware = useCallback(async () => {
     resetError();
-    await KeyringController.connectQRHardware(0);
+    // await KeyringController.connectQRHardware(0);
+    showScanner();
     // const _accounts = await KeyringController.connectQRHardware(0);
     // setAccounts(_accounts);
     // console.log('accounts', _accounts);
@@ -119,13 +120,13 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     };
   }, [KeyringController, subscribeKeyringState]);
 
-  useEffect(() => {
-    if (QRState.sync.reading) {
-      showScanner();
-    } else {
-      hideScanner();
-    }
-  }, [QRState.sync, hideScanner, showScanner]);
+  // useEffect(() => {
+  //   if (!QRState.sync.reading) {
+  //     showScanner();
+  //   } else {
+  //     hideScanner();
+  //   }
+  // }, [QRState.sync, hideScanner, showScanner]);
 
   const onScanError = useCallback(
     async (error: string) => {
