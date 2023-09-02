@@ -1207,9 +1207,7 @@ class Confirm extends PureComponent {
             ) : isQRHardwareWalletDevice ? (
               strings('transaction.confirm_with_qr_hardware')
               ) : isNFCHardwareWalletDevice ? 
-                (
-                  'Confirm with Hito Wallet'
-                )
+              strings('connect_hito_wallet.transaction.confirm')
               : (
               strings('transaction.send')
             )}

@@ -71,9 +71,15 @@ const TransactionApprovalInternal = (props: TransactionApprovalProps) => {
     return (
       <ConfirmTransactionModal
         NFCState={props.NFCState as any}
-        onCancel={onComplete}
+        onCancel={() => {
+          onComplete()
+          props.navigation.goBack()
+        }}
         onSuccess={onComplete}
-        onFailure={onComplete}
+        onFailure={() => {
+          onComplete()
+          props.navigation.goBack()
+        }}
         isVisible
       />
     );

@@ -110,23 +110,17 @@ const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
     >
       <View style={styles.container}>
         <RNCamera
-          // onMountError={(error) => {
-          //   // console.log('onMountError', error);
-          // }}
           captureAudio={false}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
           onBarCodeRead={onBarCodeRead}
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
-            title: 'Zdarova zaibal Title',
-            message: 'Zdarova zaibal message',
-            buttonPositive: 'Zdarova Ok',
-            buttonNegative: 'Zdarova Cancel',
+            title: 'Hito Wallet',
+            message: 'Scan hito wallet QR code to connect',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
           }}
-          // onStatusChange={(e) => {
-          //   // console.log('onStatusChange', e);
-          // }}
         >
           <SafeAreaView style={styles.innerView}>
             <TouchableOpacity style={styles.closeIcon} onPress={hideModal}>

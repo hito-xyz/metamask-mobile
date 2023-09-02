@@ -571,6 +571,38 @@
     "forget": "Forget this device",
     "please_wait": "Please wait"
   },
+  "connect_hito_wallet": {
+    "title": "Connect a QR-based hardware wallet",
+    "description1": "Connect an airgapped hardware wallet that communicates through QR-codes.",
+    "description2": "How it works?",
+    "description3": "Officially supported airgapped hardware wallets include:",
+    "hito": "Hito Wallet",
+    "learnMore": "Learn more",
+    "tutorial": "Tutorial",
+    "description4": "Hito (tutorial)",
+    "description5": "1. Unlock your Hito",
+    "description6": "2. Tap the ··· Menu, then go to Sync >",
+    "button_continue": "Continue",
+    "hint_text": "Scan your Hito wallet to ",
+    "purpose_connect": "connect",
+    "purpose_sign": "confirm the transaction",
+    "select_accounts": "Select an Account",
+    "prev": "PREV",
+    "next": "NEXT",
+    "unlock": "Unlock",
+    "forget": "Forget this device",
+    "please_wait": "Please wait",
+    "transaction": {
+      "title": "Confirm transaction",
+      "desc": "Please confirm that you see the same transaction on your hardware wallet",
+      "amount": "Amount",
+      "from": "From",
+      "sign": "Sign transaction",
+      "openNFC": "Open NFC connection",
+      "cancel": "Cancel",
+      "confirm": "Confirm with Hito Wallet"
+    }
+  },
   "app_settings": {
     "title": "Settings",
     "current_conversion": "Base Currency",

@@ -2,6 +2,7 @@
 /* eslint @typescript-eslint/no-require-imports: "off" */
 
 import React from 'react';
+import { strings } from '../../../../locales/i18n';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import {
   HITO_LEARN_MORE,
@@ -77,9 +78,10 @@ const createStyles = (colors: any) =>
       marginTop: 40,
       marginBottom: 40,
     },
-    keystone: {
+    hito: {
       height: 48,
       fontSize: 24,
+      color: colors.text.default,
     },
     buttonGroup: {
       display: 'flex',
@@ -100,7 +102,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_SUPPORT_VIDEO,
-          title: 'Как это работает?',
+          title:  strings('connect_hito_wallet.description2'),
         },
       });
     };
@@ -109,7 +111,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_LEARN_MORE,
-          title: 'Hito Wallet',
+          title: strings('connect_hito_wallet.hito'),
         },
       });
     };
@@ -118,7 +120,7 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
         screen: 'SimpleWebview',
         params: {
           url: HITO_SUPPORT,
-          title: 'Hito (руководство)',
+          title: strings('connect_hito_wallet.description4'),
         },
       });
     };
@@ -126,57 +128,52 @@ const HitoInstruction = (props: IConnectQRInstructionProps) => {
     return (
       <View style={styles.wrapper}>
         <ScrollView
-            contentContainerStyle={styles.container}
-            style={styles.scrollWrapper}
+          contentContainerStyle={styles.container}
+          style={styles.scrollWrapper}
         >
-            <Text style={styles.title}>Подключите аппаратный кошелек на основе NFC</Text>
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>
-                    Connect an airgapped hardware wallet that communicates through NFC chip.
-                </Text>
-                {props.renderAlert()}
-                <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
-                  Как это работает?
-                </Text>
-                <Text style={styles.text}>
-                  Вот официально поддерживаемые аппаратные кошельки с физически разделённым оборудованием:
-                </Text>
-                <Text style={styles.keystone}>
-                  Hito Wallet
-                </Text>
-                <View style={styles.buttonGroup}>
-                    <Text
-                        style={[styles.text, styles.link, styles.linkMarginRight]}
-                        onPress={navigateToLearnMore}
-                    >
-                      Подробнее
-                    </Text>
-                    <Text
-                        style={[styles.text, styles.link]}
-                        onPress={navigateToTutorial}
-                    >
-                      Руководство
-                    </Text>
-                </View>
-                <Text style={styles.text}>
-                  1. Разблокируйте свой Hito wallet
-                </Text>
-                <Text style={styles.text}>
-                  2. Нажмите на «Меню», затем выберите «Синхронизация»
-                </Text>
+          <Text style={styles.title}>{strings('connect_hito_wallet.title')}</Text>
+          <View style={styles.textContainer}>
+              <Text style={styles.text}>{strings('connect_hito_wallet.description1')}</Text>
+              {props.renderAlert()}
+              <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
+                {strings('connect_hito_wallet.description2')}
+              </Text>
+              <Text style={styles.text}>
+                {strings('connect_hito_wallet.description3')}
+              </Text>
+              <Text style={styles.hito}>
+                {strings('connect_hito_wallet.hito')}
+              </Text>
+              <View style={styles.buttonGroup}>
+                  <Text
+                    style={[styles.text, styles.link, styles.linkMarginRight]}
+                    onPress={navigateToLearnMore}
+                  >
+                    {strings('connect_hito_wallet.learnMore')}
+                  </Text>
+                  <Text
+                    style={[styles.text, styles.link]}
+                    onPress={navigateToTutorial}
+                  >
+                    {strings('connect_hito_wallet.tutorial')}
+                  </Text>
+              </View>
+              <Text style={styles.text}>
+                {strings('connect_hito_wallet.description5')}
+              </Text>
+              <Text style={styles.text}>
+                {strings('connect_hito_wallet.description6')}
+              </Text>
             </View>
-            <Text style={styles.text}>
-              Картинка для инструкции
-            </Text>
         </ScrollView>
         <View style={styles.bottom}>
-            <StyledButton
-                type={'confirm'}
-                onPress={onConnect}
-                style={styles.button}
-            >
-              Продолжить
-            </StyledButton>
+          <StyledButton
+            type={'confirm'}
+            onPress={onConnect}
+            style={styles.button}
+          >
+            {strings('connect_hito_wallet.button_continue')}
+          </StyledButton>
         </View>
       </View>
     );

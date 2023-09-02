@@ -49,6 +49,7 @@ const QRSigningModal = ({
     onCancel?.();
     dispatch(resetTransaction());
   };
+  
   const handleSuccess = () => {
     onSuccess?.();
     dispatch(resetTransaction());

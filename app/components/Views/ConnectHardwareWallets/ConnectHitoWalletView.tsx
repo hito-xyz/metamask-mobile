@@ -98,15 +98,6 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     setQRState(storeValue);
   }, []);
 
-  const onConnectHardware = useCallback(async () => {
-    resetError();
-    // await KeyringController.connectQRHardware(0);
-    showScanner();
-    // const _accounts = await KeyringController.connectQRHardware(0);
-    // setAccounts(_accounts);
-    // console.log('accounts', _accounts);
-  }, [KeyringController, resetError]);
-
   useEffect(() => {
     let memStore: any;
     KeyringController.getQRKeyringState().then((_memStore: any) => {
@@ -120,14 +111,6 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     };
   }, [KeyringController, subscribeKeyringState]);
 
-  // useEffect(() => {
-  //   if (!QRState.sync.reading) {
-  //     showScanner();
-  //   } else {
-  //     hideScanner();
-  //   }
-  // }, [QRState.sync, hideScanner, showScanner]);
-
   const onScanError = useCallback(
     async (error: string) => {
       hideScanner();
@@ -140,11 +123,7 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
 
   const onScanSuccess = useCallback(async (address: string) => {
       hideScanner();
-      try {
-          await KeyringController.unlockNFCHardwareWalletAccount(address);
-      } catch (err) {
-        console.log('Error: Error adding NFC', err);
-      }
+      await KeyringController.unlockNFCHardwareWalletAccount(address);
       resetError();
       navigation.goBack();
     },
@@ -177,7 +156,7 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
         </View>
 
         <HitoInstruction
-          onConnect={onConnectHardware}
+          onConnect={showScanner}
           renderAlert={renderAlert}
           navigation={navigation}
         />

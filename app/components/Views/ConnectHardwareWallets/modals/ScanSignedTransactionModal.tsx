@@ -94,7 +94,7 @@ const ScanSignedTransactionModal = (props: Props) => {
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: 'Scan signed transaction',
-            message: 'Scan signed transaction',
+            message: 'Sign transaction with your Hito Wallet',
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
