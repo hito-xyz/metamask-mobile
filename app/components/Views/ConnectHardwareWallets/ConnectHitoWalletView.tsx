@@ -121,14 +121,12 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
     [hideScanner, KeyringController],
   );
 
-  const onScanSuccess = useCallback(async (address: string) => {
-      hideScanner();
-      await KeyringController.unlockNFCHardwareWalletAccount(address);
-      resetError();
-      navigation.goBack();
-    },
-    [KeyringController, navigation, hideScanner, resetError],
-  );
+  const onScanSuccess = async (address: string) => {
+    hideScanner();
+    await KeyringController.unlockNFCHardwareWalletAccount(address);
+    resetError();
+    navigation.goBack();
+  }
 
   const renderAlert = () =>
     errorMsg !== '' && (

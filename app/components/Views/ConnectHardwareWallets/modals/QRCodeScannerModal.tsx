@@ -84,10 +84,10 @@ interface AnimatedQRScannerProps {
   pauseQRCode?: (x: boolean) => void;
 }
 
-const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
+const QRCodeScannerModal = (props: AnimatedQRScannerProps) => {
   const { visible, onScanError, onScanSuccess, hideModal, pauseQRCode } = props;
 
-  const onBarCodeRead = useCallback((response) => {
+  const onBarCodeRead = (response: any) => {
     if (!visible) {
       return;
     }
@@ -101,8 +101,8 @@ const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
       onScanSuccess(address);
     } else {
       onScanError(strings('transaction.unknown_qr_code'));
-    }
-  }, [onScanSuccess, onScanError]);
+    } 
+  };
   
   const onStatusChange = useCallback(
     (event) => {
@@ -159,4 +159,4 @@ const AnimatedQRScannerModal = (props: AnimatedQRScannerProps) => {
   );
 };
 
-export default AnimatedQRScannerModal;
+export default QRCodeScannerModal;
