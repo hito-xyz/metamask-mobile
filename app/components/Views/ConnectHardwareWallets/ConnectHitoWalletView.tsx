@@ -140,11 +140,8 @@ const ConnectHitoWalletView = ({ navigation }: IConnectHitoWalletViewProps) => {
 
   const onScanSuccess = useCallback(async (address: string) => {
       hideScanner();
-      const {PreferencesController} = Engine.context as any;
-      //TODO: - MAX FEDIN
       try {
           await KeyringController.unlockNFCHardwareWalletAccount(address);
-
       } catch (err) {
         console.log('Error: Error adding NFC', err);
       }
